@@ -1,0 +1,19 @@
+﻿<Window x:Class="NBA_2K13_Workarounds_Tool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NBA 2K13 Workarounds Tool" Height="223" Width="233" Icon="NBA 2K12.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button Name="btnScoreboard" Content="Scoreboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="0" Click="btnScoreboard_Click"/>
+        <Button Name="btnAutosave" Content="Autosave ?" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="1" Click="btnAutosave_Click"/>
+        <Button Name="btnSliders" Content="Import/Export Sliders" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="2" Click="btnSliders_Click"/>
+        <Button Name="btnMPPlayVision" Content="MyPlayer PlayVision ?" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="3" Click="btnMPPlayVision_Click"/>
+        <Button Name="btnTightJerseys" Content="Tight Jerseys ?" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="4" Click="btnTightJerseys_Click" />
+    </Grid>
+</Window>

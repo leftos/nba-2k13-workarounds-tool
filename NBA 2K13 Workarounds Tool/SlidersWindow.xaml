@@ -1,0 +1,17 @@
+﻿<Window x:Class="NBA_2K13_Workarounds_Tool.SlidersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SlidersWindow" Height="178" Width="184" Icon="NBA 2K12.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button Name="btnImport" Content="Import" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="0" Click="btnImport_Click"/>
+        <Button Name="btnExport" Content="Export" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="1" Click="btnExport_Click"/>
+        <Button Name="btnClose" Content="Close" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4" Grid.Row="3" Click="btnClose_Click"/>
+
+    </Grid>
+</Window>
