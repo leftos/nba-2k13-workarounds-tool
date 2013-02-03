@@ -20,6 +20,10 @@
 
 
 	Version History
+		v0.3.2
+			- PlayVision now offers ON/LITE/OFF
+			- PlayVision OFF will now actually turn PlayVision off instead of just not forcing it on
+
 		v0.3.1.1
 			- Fixed bug with Autosave feature not working at times
 

@@ -53,7 +53,7 @@ namespace NBA_2K13_Workarounds_Tool
 
             br = new BinaryReader(new FileStream(MainWindow.DocsPath + @"\temp", FileMode.Open));
             bw = new BinaryWriter(new FileStream(MainWindow.NBA2K13SavesFolder + @"\Settings.STG", FileMode.Create));
-            bw.Write(Tools.StringToByteArray(crc));
+            bw.Write(Tools.HexStringToByteArray(crc));
             byte[] buf3 = br.ReadBytes(4096);
             while (buf3.Length > 0)
             {

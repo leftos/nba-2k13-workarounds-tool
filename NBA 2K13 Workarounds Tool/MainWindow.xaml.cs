@@ -98,14 +98,18 @@ namespace NBA_2K13_Workarounds_Tool
             if (cur.EndsWith("?") || cur.EndsWith("OFF"))
             {
                 btnMPPlayVision.Content = "MyPlayer PlayVision ON";
-                timer.Start();
+            }
+            else if (cur.EndsWith("ON"))
+            {
+                btnMPPlayVision.Content = "MyPlayer PlayVision LITE";
             }
             else
             {
                 btnMPPlayVision.Content = "MyPlayer PlayVision OFF";
             }
+            timer.Start();
         }
-
+        
         private void timer_Elapsed(object sender, EventArgs e)
         {
             Process[] aProcesses = Process.GetProcessesByName("nba2k13"); //Find Tutorial-i386.exe
@@ -121,8 +125,8 @@ namespace NBA_2K13_Workarounds_Tool
                     int PlayMsgPtr = Addr.ToDec("01ff70f8");
                     int OffPCPtr = Addr.ToDec("01ff70fc");
                     int DefPCPtr = Addr.ToDec("01ff7100");
-                    int MCPVPtr = Addr.ToDec("01c4ef94");
-                    int MCPVdispPtr = Addr.ToDec("01c4ef9c");
+                    int MCPVPtr = Addr.ToDec("01c4ef90");
+                    int MCPVdispPtr = Addr.ToDec("01c4ef98");
 
                     int bytesWritten;
 
@@ -131,13 +135,27 @@ namespace NBA_2K13_Workarounds_Tool
                     string cur = btnMPPlayVision.Content.ToString();
                     if (cur.EndsWith("ON"))
                     {
-                        oMemory.Write((IntPtr) PVPtr, new byte[] {0}, out bytesWritten);
-                        oMemory.Write((IntPtr) PVdispPtr, new byte[] {1}, out bytesWritten);
-                        oMemory.Write((IntPtr) PlayMsgPtr, new byte[] {0}, out bytesWritten);
-                        oMemory.Write((IntPtr) OffPCPtr, new byte[] {0}, out bytesWritten);
-                        oMemory.Write((IntPtr) DefPCPtr, new byte[] {0}, out bytesWritten);
-                        oMemory.Write((IntPtr) MCPVPtr, new byte[] {0}, out bytesWritten);
-                        oMemory.Write((IntPtr) MCPVdispPtr, new byte[] {1}, out bytesWritten);
+                        oMemory.Write((IntPtr)PVPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)PVdispPtr, new byte[] { 1 }, out bytesWritten);
+                        oMemory.Write((IntPtr)PlayMsgPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)OffPCPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)DefPCPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)MCPVdispPtr, new byte[] { 1 }, out bytesWritten);
+                        shouldStop = false;
+                    }
+                    else if (cur.EndsWith("LITE"))
+                    {
+                        oMemory.Write((IntPtr)PVPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)PVdispPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr)MCPVdispPtr, new byte[] { 0 }, out bytesWritten);
+                        shouldStop = false;
+                    }
+                    else if (cur.EndsWith("OFF"))
+                    {
+                        oMemory.Write((IntPtr)PVPtr, new byte[] { 2 }, out bytesWritten);
+                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 2 }, out bytesWritten);
                         shouldStop = false;
                     }
 
