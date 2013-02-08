@@ -1,13 +1,34 @@
-﻿using System.Collections.Generic;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
 using System.IO;
 using System.Windows;
 using LeftosCommonLibrary;
 using Microsoft.Win32;
 
+#endregion
+
 namespace NBA_2K13_Workarounds_Tool
 {
     /// <summary>
-    /// Interaction logic for SlidersWindow.xaml
+    ///     Interaction logic for SlidersWindow.xaml
     /// </summary>
     public partial class SlidersWindow : Window
     {
@@ -27,13 +48,13 @@ namespace NBA_2K13_Workarounds_Tool
             if (ofd.FileName == "")
                 return;
 
-            BinaryReader br = new BinaryReader(new FileStream(ofd.FileName, FileMode.Open));
+            var br = new BinaryReader(new FileStream(ofd.FileName, FileMode.Open));
             byte[] buf = br.ReadBytes(504);
             br.Close();
 
-            BinaryWriter bw = new BinaryWriter(new FileStream(MainWindow.NBA2K13SavesFolder + @"\Settings.STG", FileMode.Open));
+            var bw = new BinaryWriter(new FileStream(MainWindow.NBA2K13SavesFolder + @"\Settings.STG", FileMode.Open));
             bw.BaseStream.Position = 69923;
-            bw.Write((byte)3);
+            bw.Write((byte) 3);
             bw.Write(buf);
             bw.Close();
 
@@ -66,7 +87,7 @@ namespace NBA_2K13_Workarounds_Tool
 
         private void btnExport_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
+            var sfd = new SaveFileDialog();
             sfd.DefaultExt = "*.cse";
             sfd.Filter = "Custom Sliders Export (*.cse)|*.cse";
             sfd.InitialDirectory = MainWindow.DocsPath;
@@ -75,12 +96,12 @@ namespace NBA_2K13_Workarounds_Tool
             if (sfd.FileName == "")
                 return;
 
-            BinaryReader br = new BinaryReader(new FileStream(MainWindow.NBA2K13SavesFolder + @"\Settings.STG", FileMode.Open));
+            var br = new BinaryReader(new FileStream(MainWindow.NBA2K13SavesFolder + @"\Settings.STG", FileMode.Open));
             br.BaseStream.Position = 69924;
             byte[] buf = br.ReadBytes(504);
             br.Close();
 
-            BinaryWriter bw = new BinaryWriter(new FileStream(sfd.FileName, FileMode.Create));
+            var bw = new BinaryWriter(new FileStream(sfd.FileName, FileMode.Create));
             bw.Write(buf);
             bw.Close();
 

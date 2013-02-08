@@ -1,16 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace NBA_2K13_Workarounds_Tool
 {
-    class MemoryAPI
+    internal class MemoryAPI
     {
+        #region ProcessAccessType enum
+
         [Flags]
         public enum ProcessAccessType
         {
@@ -27,6 +47,8 @@ namespace NBA_2K13_Workarounds_Tool
             PROCESS_QUERY_INFORMATION = (0x0400)
         }
 
+        #endregion
+
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
 
@@ -34,38 +56,30 @@ namespace NBA_2K13_Workarounds_Tool
         public static extern Int32 CloseHandle(IntPtr hObject);
 
         [DllImport("kernel32.dll")]
-        public static extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesRead);
+        public static extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size,
+                                                     out IntPtr lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll")]
-        public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
+        public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size,
+                                                      out IntPtr lpNumberOfBytesWritten);
     }
 
     public class Memory
     {
-        public Memory()
-        {
-        }
+        private Process m_ReadProcess;
+        private IntPtr m_hProcess = IntPtr.Zero;
 
         public Process ReadProcess
         {
-            get
-            {
-                return m_ReadProcess;
-            }
-            set
-            {
-                m_ReadProcess = value;
-            }
+            get { return m_ReadProcess; }
+            set { m_ReadProcess = value; }
         }
-        private Process m_ReadProcess = null;
-        private IntPtr m_hProcess = IntPtr.Zero;
 
         public void Open()
         {
-            MemoryAPI.ProcessAccessType access = MemoryAPI.ProcessAccessType.PROCESS_VM_READ
-            | MemoryAPI.ProcessAccessType.PROCESS_VM_WRITE
-            | MemoryAPI.ProcessAccessType.PROCESS_VM_OPERATION;
-            m_hProcess = MemoryAPI.OpenProcess((uint)access, 1, (uint)m_ReadProcess.Id);
+            MemoryAPI.ProcessAccessType access = MemoryAPI.ProcessAccessType.PROCESS_VM_READ | MemoryAPI.ProcessAccessType.PROCESS_VM_WRITE |
+                                                 MemoryAPI.ProcessAccessType.PROCESS_VM_OPERATION;
+            m_hProcess = MemoryAPI.OpenProcess((uint) access, 1, (uint) m_ReadProcess.Id);
         }
 
         public void CloseHandle()
@@ -78,7 +92,7 @@ namespace NBA_2K13_Workarounds_Tool
 
         public byte[] Read(IntPtr MemoryAddress, uint bytesToRead, out int bytesRead)
         {
-            byte[] buffer = new byte[bytesToRead];
+            var buffer = new byte[bytesToRead];
             IntPtr ptrBytesRead;
             MemoryAPI.ReadProcessMemory(m_hProcess, MemoryAddress, buffer, bytesToRead, out ptrBytesRead);
             bytesRead = ptrBytesRead.ToInt32();
@@ -90,7 +104,7 @@ namespace NBA_2K13_Workarounds_Tool
             int iPointerCount = Offset.Length - 1;
             IntPtr ptrBytesRead;
             bytesRead = 0;
-            byte[] buffer = new byte[4]; //DWORD to hold an Address
+            var buffer = new byte[4]; //DWORD to hold an Address
             int tempAddress = 0;
 
             if (iPointerCount == 0)
@@ -99,7 +113,7 @@ namespace NBA_2K13_Workarounds_Tool
                 tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[0]; //Final Address
 
                 buffer = new byte[bytesToRead];
-                MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, bytesToRead, out ptrBytesRead);
+                MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, bytesToRead, out ptrBytesRead);
 
                 bytesRead = ptrBytesRead.ToInt32();
                 return buffer;
@@ -109,11 +123,11 @@ namespace NBA_2K13_Workarounds_Tool
             {
                 if (i == iPointerCount)
                 {
-                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, 4, out ptrBytesRead);
+                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, 4, out ptrBytesRead);
                     tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[i]; //Final Address
 
                     buffer = new byte[bytesToRead];
-                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, bytesToRead, out ptrBytesRead);
+                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, bytesToRead, out ptrBytesRead);
 
                     bytesRead = ptrBytesRead.ToInt32();
                     return buffer;
@@ -125,7 +139,7 @@ namespace NBA_2K13_Workarounds_Tool
                 }
                 else
                 {
-                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, 4, out ptrBytesRead);
+                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, 4, out ptrBytesRead);
                     tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[i];
                 }
             }
@@ -136,7 +150,7 @@ namespace NBA_2K13_Workarounds_Tool
         public void Write(IntPtr MemoryAddress, byte[] bytesToWrite, out int bytesWritten)
         {
             IntPtr ptrBytesWritten;
-            MemoryAPI.WriteProcessMemory(m_hProcess, MemoryAddress, bytesToWrite, (uint)bytesToWrite.Length, out ptrBytesWritten);
+            MemoryAPI.WriteProcessMemory(m_hProcess, MemoryAddress, bytesToWrite, (uint) bytesToWrite.Length, out ptrBytesWritten);
             bytesWritten = ptrBytesWritten.ToInt32();
         }
 
@@ -145,14 +159,14 @@ namespace NBA_2K13_Workarounds_Tool
             int iPointerCount = Offset.Length - 1;
             IntPtr ptrBytesWritten;
             bytesWritten = 0;
-            byte[] buffer = new byte[4]; //DWORD to hold an Address
+            var buffer = new byte[4]; //DWORD to hold an Address
             int tempAddress = 0;
 
             if (iPointerCount == 0)
             {
                 MemoryAPI.ReadProcessMemory(m_hProcess, MemoryAddress, buffer, 4, out ptrBytesWritten);
                 tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[0]; //Final Address
-                MemoryAPI.WriteProcessMemory(m_hProcess, (IntPtr)tempAddress, bytesToWrite, (uint)bytesToWrite.Length, out ptrBytesWritten);
+                MemoryAPI.WriteProcessMemory(m_hProcess, (IntPtr) tempAddress, bytesToWrite, (uint) bytesToWrite.Length, out ptrBytesWritten);
 
                 bytesWritten = ptrBytesWritten.ToInt32();
                 return Addr.ToHex(tempAddress);
@@ -162,9 +176,10 @@ namespace NBA_2K13_Workarounds_Tool
             {
                 if (i == iPointerCount)
                 {
-                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, 4, out ptrBytesWritten);
+                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, 4, out ptrBytesWritten);
                     tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[i]; //Final Address
-                    MemoryAPI.WriteProcessMemory(m_hProcess, (IntPtr)tempAddress, bytesToWrite, (uint)bytesToWrite.Length, out ptrBytesWritten);
+                    MemoryAPI.WriteProcessMemory(m_hProcess, (IntPtr) tempAddress, bytesToWrite, (uint) bytesToWrite.Length,
+                                                 out ptrBytesWritten);
 
                     bytesWritten = ptrBytesWritten.ToInt32();
                     return Addr.ToHex(tempAddress);
@@ -176,7 +191,7 @@ namespace NBA_2K13_Workarounds_Tool
                 }
                 else
                 {
-                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr)tempAddress, buffer, 4, out ptrBytesWritten);
+                    MemoryAPI.ReadProcessMemory(m_hProcess, (IntPtr) tempAddress, buffer, 4, out ptrBytesWritten);
                     tempAddress = Addr.ToDec(Addr.Make(buffer)) + Offset[i];
                 }
             }

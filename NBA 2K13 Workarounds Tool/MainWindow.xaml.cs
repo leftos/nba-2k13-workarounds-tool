@@ -1,22 +1,47 @@
-﻿using System;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
-using LeftosCommonLibrary;
+
+#endregion
 
 namespace NBA_2K13_Workarounds_Tool
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindow mw;
         public static string DocsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\NBA 2K13 Workarounds Tool";
-        public static string NBA2K13SavesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\2K Sports\NBA 2K13\Saves";
-        DispatcherTimer timer;
-        Memory oMemory = new Memory();
+
+        public static string NBA2K13SavesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                                  @"\2K Sports\NBA 2K13\Saves";
+
+        private MainWindow mw;
+
+        private Memory oMemory = new Memory();
+        private DispatcherTimer timer;
 
         public MainWindow()
         {
@@ -30,13 +55,13 @@ namespace NBA_2K13_Workarounds_Tool
             timer.Tick += timer_Elapsed;
 
             btnTightJerseys.Visibility = Visibility.Hidden;
-            
+
             mw = this;
         }
 
         private void btnScoreboard_Click(object sender, RoutedEventArgs e)
         {
-            ScoreboardWindow sw = new ScoreboardWindow();
+            var sw = new ScoreboardWindow();
             sw.Show();
         }
 
@@ -83,7 +108,7 @@ namespace NBA_2K13_Workarounds_Tool
                 reset = true;
             }
 
-            SlidersWindow sw = new SlidersWindow();
+            var sw = new SlidersWindow();
             sw.ShowDialog();
 
             if (reset)
@@ -109,7 +134,7 @@ namespace NBA_2K13_Workarounds_Tool
             }
             timer.Start();
         }
-        
+
         private void timer_Elapsed(object sender, EventArgs e)
         {
             Process[] aProcesses = Process.GetProcessesByName("nba2k13"); //Find Tutorial-i386.exe
@@ -135,27 +160,27 @@ namespace NBA_2K13_Workarounds_Tool
                     string cur = btnMPPlayVision.Content.ToString();
                     if (cur.EndsWith("ON"))
                     {
-                        oMemory.Write((IntPtr)PVPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)PVdispPtr, new byte[] { 1 }, out bytesWritten);
-                        oMemory.Write((IntPtr)PlayMsgPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)OffPCPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)DefPCPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)MCPVdispPtr, new byte[] { 1 }, out bytesWritten);
+                        oMemory.Write((IntPtr) PVPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) PVdispPtr, new byte[] {1}, out bytesWritten);
+                        oMemory.Write((IntPtr) PlayMsgPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) OffPCPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) DefPCPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) MCPVPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) MCPVdispPtr, new byte[] {1}, out bytesWritten);
                         shouldStop = false;
                     }
                     else if (cur.EndsWith("LITE"))
                     {
-                        oMemory.Write((IntPtr)PVPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)PVdispPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 0 }, out bytesWritten);
-                        oMemory.Write((IntPtr)MCPVdispPtr, new byte[] { 0 }, out bytesWritten);
+                        oMemory.Write((IntPtr) PVPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) PVdispPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) MCPVPtr, new byte[] {0}, out bytesWritten);
+                        oMemory.Write((IntPtr) MCPVdispPtr, new byte[] {0}, out bytesWritten);
                         shouldStop = false;
                     }
                     else if (cur.EndsWith("OFF"))
                     {
-                        oMemory.Write((IntPtr)PVPtr, new byte[] { 2 }, out bytesWritten);
-                        oMemory.Write((IntPtr)MCPVPtr, new byte[] { 2 }, out bytesWritten);
+                        oMemory.Write((IntPtr) PVPtr, new byte[] {2}, out bytesWritten);
+                        oMemory.Write((IntPtr) MCPVPtr, new byte[] {2}, out bytesWritten);
                         shouldStop = false;
                     }
 
@@ -171,7 +196,7 @@ namespace NBA_2K13_Workarounds_Tool
 
                     // Autosave
                     int AutosavePtr = Addr.ToDec("01FF67B0");
-                    
+
                     cur = btnAutosave.Content.ToString();
                     if (cur.EndsWith("OFF"))
                     {
@@ -180,7 +205,7 @@ namespace NBA_2K13_Workarounds_Tool
                     }
                     else if (cur.EndsWith("ON"))
                     {
-                        oMemory.Write((IntPtr)AutosavePtr, new byte[] { 1 }, out bytesWritten);
+                        oMemory.Write((IntPtr) AutosavePtr, new byte[] {1}, out bytesWritten);
                     }
 
                     if (shouldStop)

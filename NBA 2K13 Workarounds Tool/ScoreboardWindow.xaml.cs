@@ -1,16 +1,38 @@
-﻿using System;
+﻿#region Copyright Notice
+
+//    Copyright 2011-2013 Eleftherios Aslanoglou
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+#endregion
+
+#region Using Directives
+
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 
+#endregion
+
 namespace NBA_2K13_Workarounds_Tool
 {
     /// <summary>
-    /// Interaction logic for ScoreboardWindow.xaml
+    ///     Interaction logic for ScoreboardWindow.xaml
     /// </summary>
     public partial class ScoreboardWindow : Window
     {
-        Memory oMemory = new Memory();
+        private Memory oMemory = new Memory();
 
         private ScoreboardWindow sw;
 
@@ -20,14 +42,14 @@ namespace NBA_2K13_Workarounds_Tool
 
             sw = this;
 
-            DispatcherTimer timer = new DispatcherTimer();
+            var timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Tick += timer_Elapsed;
 
             timer.Start();
         }
 
-        void timer_Elapsed(object sender, EventArgs eventArgs)
+        private void timer_Elapsed(object sender, EventArgs eventArgs)
         {
             Process[] aProcesses = Process.GetProcessesByName("nba2k13"); //Find Tutorial-i386.exe
             if (aProcesses.Length != 0) //If the process exists
@@ -42,8 +64,8 @@ namespace NBA_2K13_Workarounds_Tool
                     int awayScorePointer = Addr.ToDec("01BC7E7C");
 
                     int bytesRead;
-                    var homeScore = Convert.ToUInt16(oMemory.Read((IntPtr)homeScorePointer, 1, out bytesRead)[0]);
-                    var awayScore = Convert.ToUInt16(oMemory.Read((IntPtr)awayScorePointer, 1, out bytesRead)[0]);
+                    ushort homeScore = Convert.ToUInt16(oMemory.Read((IntPtr) homeScorePointer, 1, out bytesRead)[0]);
+                    ushort awayScore = Convert.ToUInt16(oMemory.Read((IntPtr) awayScorePointer, 1, out bytesRead)[0]);
                     txbAway.Text = awayScore.ToString();
                     txbHome.Text = homeScore.ToString();
                 }
