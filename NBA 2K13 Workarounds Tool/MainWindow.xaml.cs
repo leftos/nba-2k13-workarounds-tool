@@ -216,7 +216,14 @@ namespace NBA_2K13_Workarounds_Tool
                 }
                 finally
                 {
-                    oMemory.CloseHandle();
+                    try
+                    {
+                        oMemory.CloseHandle();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Couldn't close handle properly. App must have exited.");
+                    }
                 }
             }
             else
